@@ -3,6 +3,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:zakat_app/Components/my_Button.dart';
 import 'package:zakat_app/Components/my_TextField.dart';
 import 'package:zakat_app/DataBase/Helpers/DBConnction.dart';
+import 'package:zakat_app/DataBase/Models/users_model.dart';
 import 'package:zakat_app/Pages/Auth/Login.dart';
 
 // class RagsterPage extends StatefulWidget {
@@ -116,21 +117,46 @@ class _RagsterPageState extends State<RagsterPage> {
   TextEditingController username = TextEditingController();
   TextEditingController password = TextEditingController();
   TextEditingController email = TextEditingController();
-  TextEditingController phonenumber = TextEditingController();
+  TextEditingController phone = TextEditingController();
   TextEditingController conformPassword = TextEditingController();
   DBMatser db = DBMatser();
+  bool isfound = false;
+
   void reagster() async {
-    int respones = await db.insertData('Users', {
-      'username': username.text,
-      'password': password.text,
-      'email': email.text,
-      'phonenumber': phonenumber.text,
-    });
-    if (respones > 0) {
-      print("----------------------------------------------add");
+    UsersModel usersModel = UsersModel(
+      id: null,
+      username: username.text,
+      password: password.text,
+      email: email.text,
+      phone: phone.text,
+      role: 'ADMIN',
+    );
+    isfound = await db.userExists(username.text, password.text);
+    if (isfound) {
+      print("It IS Founded\n\n\n");
+    } else if (!isfound) {
+      await db.savaUser(usersModel);
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => const LoginPage()));
     } else {
-      print("it Was Erorrr---------------------------------");
+      print("Erorrrr-------------------------------------\n\n\n");
     }
+    // int respones = await db.insertData('Users', {
+    //   'username': username.text,
+    //   'password': password.text,
+    //   'email': email.text,
+    //   'phone': phone.text,
+    // });
+    // if (respones > 0) {
+    //   print("----------------------------------------------add");
+    //   Navigator.push(
+    //       context,
+    //       MaterialPageRoute(
+    //         builder: (context) => const Test(),
+    //       ));
+    // } else {
+    //   print("it Was Erorrr---------------------------------");
+    // }
   }
 
   @override
@@ -193,7 +219,7 @@ class _RagsterPageState extends State<RagsterPage> {
                       textInputType: TextInputType.phone,
                       icon: Icons.phone,
                       obscureText: false,
-                      controller: phonenumber,
+                      controller: phone,
                       label: "Phone Number",
                     ),
                     const SizedBox(
@@ -223,7 +249,11 @@ class _RagsterPageState extends State<RagsterPage> {
           ),
           MyButton(
             label: "تسجيل الدخول ",
-            onTap: reagster,
+            onTap: () {
+              setState(() {
+                reagster();
+              });
+            },
           ),
           Center(
             child: Row(

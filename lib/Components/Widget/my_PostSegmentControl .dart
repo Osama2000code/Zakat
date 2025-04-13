@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:zakat_app/Models/post_model.dart';
+import 'package:zakat_app/Services/post_model.dart';
 
 class MyPostSegmentControl extends StatelessWidget {
   const MyPostSegmentControl({super.key});

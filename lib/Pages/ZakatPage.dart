@@ -53,10 +53,24 @@ class _ZakatPageState extends State<ZakatPage> {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: const [
-                MyzakatInfo(info: "2025", title: "Time"),
-                MyzakatInfo(info: "5360.00", title: "Gold Time"),
-                MyzakatInfo(info: "1250.00", title: "Finshed"),
+              children: [
+                const MyzakatInfo(info: "2025", title: "Time"),
+                VerticalDivider(
+                  color: Theme.of(context).colorScheme.primary,
+                  indent: 5,
+                  endIndent: 5,
+                  width: 2.0,
+                  thickness: 2.0,
+                ),
+                const MyzakatInfo(info: "5360.00", title: "Gold Time"),
+                VerticalDivider(
+                  color: Theme.of(context).colorScheme.primary,
+                  indent: 5,
+                  endIndent: 5,
+                  width: 2.0,
+                  thickness: 2.0,
+                ),
+                const MyzakatInfo(info: "1250.00", title: "Finshed"),
               ],
             ),
           ),
@@ -74,6 +88,7 @@ class _ZakatPageState extends State<ZakatPage> {
               scrollDirection: Axis.horizontal,
               children: [
                 MyZkataIconButton(
+                  onprees:(){},
                   icon: Icon(
                     Icons.add,
                     size: 40,
@@ -82,6 +97,8 @@ class _ZakatPageState extends State<ZakatPage> {
                   title: "Zakat",
                 ),
                 MyZkataIconButton(
+                  onprees:(){},
+
                   icon: Icon(
                     Icons.add,
                     size: 40,
@@ -90,6 +107,7 @@ class _ZakatPageState extends State<ZakatPage> {
                   title: "Zakat",
                 ),
                 MyZkataIconButton(
+                  onprees:(){},
                   icon: Icon(
                     Icons.add,
                     size: 40,

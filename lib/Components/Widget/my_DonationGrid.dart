@@ -1,35 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:zakat_app/Components/Widget/my_DonationCard.dart';
-import 'package:zakat_app/Models/post_Manger.dart';
+import 'package:zakat_app/Services/user_provider.dart';
 
-class MyDonationGrid extends StatefulWidget {
-  const MyDonationGrid({super.key});
+// class MyDonationGrid extends StatefulWidget {
+//   const MyDonationGrid({super.key});
 
-  @override
-  State<MyDonationGrid> createState() => _MyDonationGridState();
-}
+//   @override
+//   State<MyDonationGrid> createState() => _MyDonationGridState();
+// }
 
-class _MyDonationGridState extends State<MyDonationGrid> {
-  var listofPost = PostManger().postInfo;
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 250,
-      child: ListView.builder(
-        itemCount: listofPost.length,
-        scrollDirection: Axis.horizontal,
-        itemBuilder: (context, index) {
-          return MyDonationCard(
-            daysLeft: 22,
-            progress: 0.1,
-            raisedAmount: listofPost[index].detailsPost,
-            title: listofPost[index].nameOfPost,
-          );
-        },
-      ),
-    );
-  }
-}
+// class _MyDonationGridState extends State<MyDonationGrid> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return SizedBox(
+//       height: 250,
+//       child: ListView.builder(
+//         itemCount: listofPost.length,
+//         scrollDirection: Axis.horizontal,
+//         itemBuilder: (context, index) {
+//           return MyDonationCard(
+//             daysLeft: 22,
+//             progress: 0.1,
+//             raisedAmount: listofPost[index].detailsPost,
+//             title: listofPost[index].nameOfPost,
+//           );
+//         },
+//       ),
+//     );
+//   }
+// }
 
 
 // class MyDonationGrid extends StatelessWidget {

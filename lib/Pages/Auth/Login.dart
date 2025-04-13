@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:zakat_app/Components/my_Button.dart';
 import 'package:zakat_app/Components/my_TextField.dart';
+import 'package:zakat_app/DataBase/Helpers/dbConnction.dart';
 import 'package:zakat_app/Pages/Auth/Ragster.dart';
 import 'package:zakat_app/app.dart';
 
@@ -12,18 +13,54 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  TextEditingController phoneNumber = TextEditingController();
+  TextEditingController username = TextEditingController();
   TextEditingController password = TextEditingController();
+  String _message = '';
+  late bool checked=false;
+
   @override
+  Future<List<Map>> readData() async {
+    DBMatser db = DBMatser();
+    List<Map> respones = await db.readData('Users');
+    return respones;
+  }
+
+  void _checkUsers() async {
+    DBMatser db = DBMatser();
+    bool exists = await db.userExists(username.text, password.text);
+    setState(() {
+      checked = exists;
+      _message = exists ? "user exists" : 'user is Not exists';
+    });
+  }
+
   void login() {
     // Auth Code
-
+    _checkUsers();
     //nav
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const App(),
-        ));
+    if (checked) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const App(),
+          ));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(_message),
+          action: SnackBarAction(
+            label: "Sing Up",
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const RagsterPage(),
+                  ));
+            },
+          ),
+        ),
+      );
+    }
   }
 
   @override
@@ -60,7 +97,7 @@ class _LoginPageState extends State<LoginPage> {
           //textfild -1
           MyTextField(
             textInputType: TextInputType.text,
-            controller: phoneNumber,
+            controller: username,
             label: "Phone Number",
             obscureText: false,
             icon: Icons.person,
@@ -79,7 +116,11 @@ class _LoginPageState extends State<LoginPage> {
           // MyBouttom
           MyButton(
             label: "تسجيل الدخول ",
-            onTap: login,
+            onTap: () {
+              setState(() {
+                login();
+              });
+            },
           ),
           Center(
             child: Row(

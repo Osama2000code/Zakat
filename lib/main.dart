@@ -4,16 +4,23 @@ import 'package:zakat_app/Pages/Auth/Login.dart';
 import 'package:zakat_app/Pages/HomePage.dart';
 import 'package:zakat_app/Pages/ZakatProjectsPage.dart';
 import 'package:zakat_app/Pages/settingsPage.dart';
+import 'package:zakat_app/Pages/test.dart';
+import 'package:zakat_app/Services/user_provider.dart';
 import 'package:zakat_app/Themes/Theme_providers.dart';
-import 'package:zakat_app/app.dart';
 
 void main() {
   runApp(
-    MultiProvider(providers: [
-      ChangeNotifierProvider(
-        create: (context) => ThemeProviders(),
-      ),
-    ], child: const MyApp()),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => ThemeProviders(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => UserProvider(),
+        ),
+      ],
+      child: const MyApp(),
+    ),
   );
 }
 
