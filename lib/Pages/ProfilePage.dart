@@ -13,21 +13,13 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   DBMatser db = DBMatser();
-  late String isadmin;
-  
-  Future<void> _loadingData(BuildContext context) async {
-    final userProvider = Provider.of<UserProvider>(context, listen: false);
-    isadmin = userProvider.isAdmin;
-    UsersModel? userList = await db.getUser(3);
-    if (userList != null) {
-      userProvider.setUser(userList);
-    }
-  }
-
-  @override
+  late Future<UsersModel?> usersModel;
   @override
   Widget build(BuildContext context) {
-    final userProvider = Provider.of<UserProvider>(context);
+    final userProvider = Provider.of<UserProvider>(
+      context,
+      listen: true,
+    );
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
@@ -39,68 +31,99 @@ class _ProfilePageState extends State<ProfilePage> {
         elevation: 0,
         backgroundColor: Theme.of(context).colorScheme.background,
       ),
-      body: ListView(
-        children: [
-          FutureBuilder(
-            future: _loadingData(context),
-            builder: (context, snapshot) {
-              final items = snapshot.data;
+      body: FutureBuilder<UsersModel?>(
+        future: userProvider.getCurrentUserID(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          final items = snapshot.data!;
+          print(items.toMAp());
+          if (snapshot.hasData) {
+            if (items.role == "user") {
+              //
+              return Center(
+                child: Text("This is User ${items.role}"),
+              );
+              //
+            } else {
+              return Text("This is ${items.role}");
+            }
 
-              return Container(
-                height: 150,
-                margin: const EdgeInsets.all(8.0),
-                padding: const EdgeInsets.all(10.0),
+            //
+          } else {
+            return Center(
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(6.0),
-                      child: Image.asset(
-                        "assets/images/First-Logog-In-Login-Ragster.jpg",
-                        height: 50,
-                        width: 50,
-                      ),
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Welcom ${userProvider.currentUser?.id} no ",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).colorScheme.inverseSurface,
-                          ),
-                        ),
-                        Text(
-                          "${userProvider.currentUser?.email}",
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Theme.of(context).colorScheme.inversePrimary,
-                          ),
-                        ),
-                      ],
-                    ),
+                    Text("User Id = ${items.username}"),
+                    Text("User Id = ${items.role}"),
                   ],
                 ),
-              );
-            },
-          ),
-          const Divider(),
-          ListTile(
-            title: Text("Your Are $isadmin"),
-          ),
-          const ListTile(
-            title: Text("data"),
-          ),
-          const ListTile(
-            title: Text("data"),
-          ),
-          const ListTile(
-            title: Text("data"),
-          ),
-        ],
+              ),
+            );
+            //
+          }
+        },
       ),
+      // body: ListView(
+      //   children: [
+      //     Container(
+      //       height: 150,
+      //       margin: const EdgeInsets.all(8.0),
+      //       padding: const EdgeInsets.all(10.0),
+      //       child: Row(
+      //         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      //         children: [
+      //           ClipRRect(
+      //             borderRadius: BorderRadius.circular(6.0),
+      //             child: Image.asset(
+      //               "assets/images/First-Logog-In-Login-Ragster.jpg",
+      //               height: 50,
+      //               width: 50,
+      //             ),
+      //           ),
+      //           Column(
+      //             mainAxisAlignment: MainAxisAlignment.center,
+      //             children: [
+      //               Text(
+      //                 "Welcom ${userProvider.currentUser?.id} no ",
+      //                 style: TextStyle(
+      //                   fontSize: 16,
+      //                   fontWeight: FontWeight.bold,
+      //                   color: Theme.of(context).colorScheme.inverseSurface,
+      //                 ),
+      //               ),
+      //               Text(
+      //                 "${userProvider.currentUser?.email}",
+      //                 style: TextStyle(
+      //                   fontSize: 12,
+      //                   color: Theme.of(context).colorScheme.inversePrimary,
+      //                 ),
+      //               ),
+      //             ],
+      //           ),
+      //         ],
+      //       ),
+      //     ),
+
+      //     const Divider(),
+      //     ListTile(
+      //       title: Text("Your Are $isadmin"),
+      //     ),
+      //     const ListTile(
+      //       title: Text("data"),
+      //     ),
+      //     const ListTile(
+      //       title: Text("data"),
+      //     ),
+      //     const ListTile(
+      //       title: Text("data"),
+      //     ),
+      //   ],
+      // ),
     );
   }
 }

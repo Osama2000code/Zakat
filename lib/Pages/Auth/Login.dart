@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:zakat_app/Components/my_Button.dart';
 import 'package:zakat_app/Components/my_TextField.dart';
 import 'package:zakat_app/DataBase/Helpers/dbConnction.dart';
+import 'package:zakat_app/DataBase/Models/users_model.dart';
 import 'package:zakat_app/Pages/Auth/Ragster.dart';
+import 'package:zakat_app/Services/user_provider.dart';
 import 'package:zakat_app/app.dart';
 
 class LoginPage extends StatefulWidget {
@@ -16,7 +19,7 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController username = TextEditingController();
   TextEditingController password = TextEditingController();
   String _message = '';
-  late bool checked=false;
+  late bool checked = false;
 
   @override
   Future<List<Map>> readData() async {
@@ -32,6 +35,12 @@ class _LoginPageState extends State<LoginPage> {
       checked = exists;
       _message = exists ? "user exists" : 'user is Not exists';
     });
+  }
+
+  cleartUser(BuildContext context) async {
+    DBMatser db = DBMatser();
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    userProvider.clearUser();
   }
 
   void login() {
@@ -98,7 +107,7 @@ class _LoginPageState extends State<LoginPage> {
           MyTextField(
             textInputType: TextInputType.text,
             controller: username,
-            label: "Phone Number",
+            label: "Username",
             obscureText: false,
             icon: Icons.person,
           ),

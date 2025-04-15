@@ -42,14 +42,14 @@ class DBMatser {
       $columnPassword TEXT NOT NULL,
       $columnEmail TEXT UNIQUE NOT NULL,
       $columnPhone TEXT,
-      $columnRole TEXT DEFAULT 'USER'
+      $columnRole TEXT DEFAULT 'user',
   );
 
     """);
     print("DataBasw Created--------------------------------------------");
   }
 
-  _onUpgrade(Database db, int oldVersion, int newVersion) async {
+  Future _onUpgrade(Database db, int oldVersion, int newVersion) async {
     print("DATABASE Upgraded  ---------------\n");
   }
 
@@ -143,6 +143,17 @@ class DBMatser {
       }
     }
     return usersList;
+  }
+
+// get Admin in user
+  Future<UsersModel?> getLoggedInUser() async {
+    Database? mydb = await db;
+    final List<Map<String, dynamic>> maps =
+        await mydb!.query(tableName, where: "$columnRole= ?", limit: 1);
+    if (maps.isNotEmpty) {
+      return UsersModel.fromMap(maps.first);
+    }
+    return null;
   }
 
 // Get User Aftoer Logined in

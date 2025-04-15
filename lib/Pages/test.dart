@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:zakat_app/Components/my_TextField.dart';
 import 'package:zakat_app/DataBase/Helpers/dbConnction.dart';
 import 'package:zakat_app/DataBase/Models/users_model.dart';
+import 'package:zakat_app/Services/user_provider.dart';
 
 class Test extends StatefulWidget {
   const Test({super.key});
@@ -12,6 +14,7 @@ class Test extends StatefulWidget {
 
 class _TestState extends State<Test> {
   late Future<List<UsersModel>> userList;
+  late UsersModel usersModell;
   TextEditingController testControler = TextEditingController();
   var dbHelper;
   DBMatser db = DBMatser();
@@ -20,6 +23,7 @@ class _TestState extends State<Test> {
   void initState() {
     dbHelper = DBMatser();
     super.initState();
+
     reafr();
   }
 
@@ -28,6 +32,7 @@ class _TestState extends State<Test> {
       userList = db.getAllUsers();
     });
     print(userList);
+    // db.updataData("Users", {"loggedIn": 1}, "id=3");
   }
 
   Future<List<Map>> readDAta() async {
@@ -73,6 +78,8 @@ class _TestState extends State<Test> {
 
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context,listen: true);
+    
     return Scaffold(
       appBar: AppBar(
         title: const Text("Text"),
