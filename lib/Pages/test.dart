@@ -35,11 +35,6 @@ class _TestState extends State<Test> {
     // db.updataData("Users", {"loggedIn": 1}, "id=3");
   }
 
-  Future<List<Map>> readDAta() async {
-    List<Map> respones = await db.readData('Users');
-    return respones;
-  }
-
   SingleChildScrollView listview(List<UsersModel> usersModel) {
     return SingleChildScrollView(
       scrollDirection: Axis.vertical,
@@ -78,8 +73,8 @@ class _TestState extends State<Test> {
 
   @override
   Widget build(BuildContext context) {
-    final userProvider = Provider.of<UserProvider>(context,listen: true);
-    
+    final userProvider = Provider.of<UserProvider>(context, listen: true);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Text"),
@@ -115,30 +110,6 @@ class _TestState extends State<Test> {
           ),
           const SizedBox(
             height: 20,
-          ),
-          Container(
-            height: 200,
-            color: Colors.grey,
-            child: FutureBuilder(
-              future: readDAta(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return ListView.builder(
-                    itemCount: snapshot.data!.length,
-                    itemBuilder: (context, index) {
-                      final item = snapshot.data![index];
-                      return ListTile(
-                        title: Text(item['username'].toString()),
-                        subtitle: Text(item['email'].toString()),
-                        leading: Text(item['id'].toString()),
-                      );
-                    },
-                  );
-                } else {
-                  return const Text("No DAta");
-                }
-              },
-            ),
           ),
           const SizedBox(
             height: 10,

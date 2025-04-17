@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:zakat_app/DataBase/Helpers/dbConnction.dart';
-import 'package:zakat_app/DataBase/Models/users_model.dart';
+import 'package:zakat_app/Pages/ZakatProjectsPage.dart';
+import 'package:zakat_app/Pages/settingsPage.dart';
+import 'package:zakat_app/Pages/user/view.dart';
 import 'package:zakat_app/Services/user_provider.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -13,13 +16,46 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   DBMatser db = DBMatser();
-  late Future<UsersModel?> usersModel;
+
   @override
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(
       context,
-      listen: true,
+      listen: false,
     );
+    final user = userProvider.currentUser;
+    showUser() {
+      if (user == null) {
+        return const Text("Not Loggged in ");
+      } else if (user.role == "1") {
+        return ListTile(
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  // go to Admin dashboard
+                  builder: (context) => const ZakatScreen(),
+                ));
+          },
+          leading: const Icon(Icons.dashboard),
+          title: const Text("لوحة التحكم "),
+        );
+      } else {
+        return ListTile(
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  // go to Edite User Info
+                  builder: (context) => const ProfileView(),
+                ));
+          },
+          leading: const Icon(Icons.info),
+          title: const Text("البيانات الشخصية   "),
+        );
+      }
+    }
+
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
@@ -31,99 +67,81 @@ class _ProfilePageState extends State<ProfilePage> {
         elevation: 0,
         backgroundColor: Theme.of(context).colorScheme.background,
       ),
-      body: FutureBuilder<UsersModel?>(
-        future: userProvider.getCurrentUserID(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          final items = snapshot.data!;
-          print(items.toMAp());
-          if (snapshot.hasData) {
-            if (items.role == "user") {
-              //
-              return Center(
-                child: Text("This is User ${items.role}"),
-              );
-              //
-            } else {
-              return Text("This is ${items.role}");
-            }
 
-            //
-          } else {
-            return Center(
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      //
+
+      body: ListView(
+        children: [
+          Container(
+            height: 150,
+            margin: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(10.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(6.0),
+                  child: Image.asset(
+                    "assets/images/First-Logog-In-Login-Ragster.jpg",
+                    height: 50,
+                    width: 50,
+                  ),
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("User Id = ${items.username}"),
-                    Text("User Id = ${items.role}"),
+                    Text(
+                      "Welcom ${user!.username} Back . ".toUpperCase(),
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).colorScheme.inverseSurface,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      "Email : ${user.email}".toUpperCase(),
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Theme.of(context).colorScheme.inversePrimary,
+                      ),
+                    ),
                   ],
                 ),
-              ),
-            );
-            //
-          }
-        },
+              ],
+            ),
+          ),
+          const Divider(),
+          showUser(),
+          ListTile(
+            title: const Text("Seeting"),
+            leading: const Icon(Icons.settings_ethernet),
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const SettingPage(),
+                  ));
+            },
+          ),
+          ListTile(
+            title: const Text("تسجيل الخروج "),
+            leading: const Icon(
+              Icons.exit_to_app,
+              color: Colors.red,
+            ),
+            onTap: () async {
+              await userProvider.outUser();
+              Future.delayed(
+                const Duration(seconds: 2),
+                () => SystemNavigator.pop(),
+              );
+            },
+          ),
+        ],
       ),
-      // body: ListView(
-      //   children: [
-      //     Container(
-      //       height: 150,
-      //       margin: const EdgeInsets.all(8.0),
-      //       padding: const EdgeInsets.all(10.0),
-      //       child: Row(
-      //         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      //         children: [
-      //           ClipRRect(
-      //             borderRadius: BorderRadius.circular(6.0),
-      //             child: Image.asset(
-      //               "assets/images/First-Logog-In-Login-Ragster.jpg",
-      //               height: 50,
-      //               width: 50,
-      //             ),
-      //           ),
-      //           Column(
-      //             mainAxisAlignment: MainAxisAlignment.center,
-      //             children: [
-      //               Text(
-      //                 "Welcom ${userProvider.currentUser?.id} no ",
-      //                 style: TextStyle(
-      //                   fontSize: 16,
-      //                   fontWeight: FontWeight.bold,
-      //                   color: Theme.of(context).colorScheme.inverseSurface,
-      //                 ),
-      //               ),
-      //               Text(
-      //                 "${userProvider.currentUser?.email}",
-      //                 style: TextStyle(
-      //                   fontSize: 12,
-      //                   color: Theme.of(context).colorScheme.inversePrimary,
-      //                 ),
-      //               ),
-      //             ],
-      //           ),
-      //         ],
-      //       ),
-      //     ),
-
-      //     const Divider(),
-      //     ListTile(
-      //       title: Text("Your Are $isadmin"),
-      //     ),
-      //     const ListTile(
-      //       title: Text("data"),
-      //     ),
-      //     const ListTile(
-      //       title: Text("data"),
-      //     ),
-      //     const ListTile(
-      //       title: Text("data"),
-      //     ),
-      //   ],
-      // ),
     );
   }
 }

@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:zakat_app/Components/my_Button.dart';
 import 'package:zakat_app/Components/my_TextField.dart';
 import 'package:zakat_app/DataBase/Helpers/dbConnction.dart';
-import 'package:zakat_app/DataBase/Models/users_model.dart';
 import 'package:zakat_app/Pages/Auth/Ragster.dart';
 import 'package:zakat_app/Services/user_provider.dart';
 import 'package:zakat_app/app.dart';
@@ -18,36 +17,28 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   TextEditingController username = TextEditingController();
   TextEditingController password = TextEditingController();
-  String _message = '';
-  late bool checked = false;
+  // final String _message = '';
+  // late bool checked = false;
 
-  @override
-  Future<List<Map>> readData() async {
-    DBMatser db = DBMatser();
-    List<Map> respones = await db.readData('Users');
-    return respones;
-  }
+  // @override
+  // Future<List<Map>> readData() async {
 
-  void _checkUsers() async {
-    DBMatser db = DBMatser();
-    bool exists = await db.userExists(username.text, password.text);
-    setState(() {
-      checked = exists;
-      _message = exists ? "user exists" : 'user is Not exists';
-    });
-  }
+  //   DBMatser db = DBMatser();
+  //   List<Map> respones = await db.readData('Users');
+  //   return respones;
+  // }
 
-  cleartUser(BuildContext context) async {
-    DBMatser db = DBMatser();
-    final userProvider = Provider.of<UserProvider>(context, listen: false);
-    userProvider.clearUser();
-  }
+  // void _checkUsers() async {
+  //   DBMatser db = DBMatser();
+  //   bool exists = await db.userExists(username.text, password.text);
+  //   setState(() {
+  //     checked = exists;
+  //     _message = exists ? "user exists" : 'user is Not exists';
+  //   });
+  // }
 
-  void login() {
-    // Auth Code
-    _checkUsers();
-    //nav
-    if (checked) {
+  void login() async {
+    if (true) {
       Navigator.push(
           context,
           MaterialPageRoute(
@@ -56,7 +47,7 @@ class _LoginPageState extends State<LoginPage> {
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(_message),
+          content: const Text("_message"),
           action: SnackBarAction(
             label: "Sing Up",
             onPressed: () {
@@ -74,6 +65,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       body: ListView(
@@ -125,10 +117,52 @@ class _LoginPageState extends State<LoginPage> {
           // MyBouttom
           MyButton(
             label: "تسجيل الدخول ",
-            onTap: () {
-              setState(() {
-                login();
-              });
+            onTap: () async {
+              DBMatser db = DBMatser();
+              // Auth Code
+              final user = await db.userIsExists(username.text, password.text);
+              if (user != null) {
+                await userProvider.setUser(user);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const App()),
+                );
+              } else {
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: const Center(child: Text("Ops...")),
+                      titlePadding: const EdgeInsets.all(5),
+                      content:
+                          const Text("No Such User Found , Create User Know"),
+                      actions: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const RagsterPage(),
+                                    ));
+                              },
+                              child: const Text("Create User"),
+                            ),
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: const Text("No !"),
+                            ),
+                          ],
+                        )
+                      ],
+                    );
+                  },
+                );
+              }
+              // _checkUsers();
+              //nav
             },
           ),
           Center(

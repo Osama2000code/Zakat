@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:zakat_app/Pages/Auth/Login.dart';
 import 'package:zakat_app/Pages/HomePage.dart';
 import 'package:zakat_app/Pages/ZakatProjectsPage.dart';
 import 'package:zakat_app/Pages/settingsPage.dart';
-import 'package:zakat_app/Pages/test.dart';
 import 'package:zakat_app/Services/user_provider.dart';
 import 'package:zakat_app/Themes/Theme_providers.dart';
 
@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       theme: Provider.of<ThemeProviders>(context).themeData,
-      home: const Test(),
+      home: const LoginPage(),
       routes: {
         'HomePage': (context) => const HomePage(),
         'SettingPage': (context) => const SettingPage(),

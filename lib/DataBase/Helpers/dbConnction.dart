@@ -9,6 +9,7 @@ class DBMatser {
   static const columnID = 'id';
   static const columnUsername = 'username';
   static const columnPassword = 'password';
+  static const columnImage = 'image';
   static const columnEmail = 'email';
   static const columnPhone = 'phone';
   static const columnRole = 'role';
@@ -42,8 +43,43 @@ class DBMatser {
       $columnPassword TEXT NOT NULL,
       $columnEmail TEXT UNIQUE NOT NULL,
       $columnPhone TEXT,
-      $columnRole TEXT DEFAULT 'user',
+      $columnImage TEXT DEFAULT 'N',
+      $columnRole TEXT DEFAULT '0'
   );
+
+    """);
+    await db.execute("""
+    CREATE TABLE projects (
+    project_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    project_name TEXT NOT NULL,
+    project_description TEXT,
+    project_image TEXT,
+    project_arget_amount TEXT,
+    project_target_raised TEXT,
+    project_start_date TEXT,
+    project_end_date TEXT,
+    project_status TEXT DEFAULT 'pending'
+);
+
+ 
+
+    """);
+    await db.execute("""
+ 
+CREATE TABLE applicants (
+    applicants_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER,
+    applicants_name TEXT NOT NULL,
+    user_national_id TEXT UNIQUE NOT NULL,
+    user_address TEXT,
+    user_phone TEXT,
+    user_email TEXT,
+    application_date TEXT,
+    applicants_status TEXT DEFAULT 'p',
+    FOREIGN KEY (user_id) REFERENCES $tableName($columnID)
+);
+
+ 
 
     """);
     print("DataBasw Created--------------------------------------------");
@@ -53,73 +89,24 @@ class DBMatser {
     print("DATABASE Upgraded  ---------------\n");
   }
 
-  readData(String table) async {
-    Database? mydb = await db;
-    Future<List<Map>> respones = mydb!.query(table);
-    return respones;
-  }
-
-  // Insert Data Function
-  insertData(String table, Map<String, Object?> values) async {
-    Database? mydb = await db;
-    Future<int> respones = mydb!.insert(table, values);
-    return respones;
-  }
-
-  // UpData Data Function
-  updataData(String table, Map<String, Object?> values, String? where) async {
-    Database? mydb = await db;
-    Future<int> respones = mydb!.update(table, values, where: where);
-    return respones;
-  }
-
-  // Delete Data Function
-  deleteData(String table, String? where) async {
-    Database? mydb = await db;
-    Future<int> respones = mydb!.delete(table, where: where);
-    return respones;
-  }
-
 // Insert Users
-  Future<UsersModel> savaUser(UsersModel usersModel) async {
+  Future<int> savaUser(UsersModel usersModel) async {
     Database? mydb = await db;
-    usersModel.id = await mydb!.insert(tableName, usersModel.toMAp());
-    await mydb.transaction((txn) async {
-      var sql = '''
-          INSERT INTO $tableName 
-          (
-          $columnUsername,
-          $columnPassword,
-          $columnEmail,
-          $columnPhone,
-          $columnRole
-          )
-          VALUES
-          (
-          "${usersModel.username}",
-          "${usersModel.password}",
-          "${usersModel.email}",
-          "${usersModel.phone}",
-          "${usersModel.role}"
-          );
-          ''';
-      return await txn.rawInsert(sql);
-    });
-    return usersModel;
+    return await mydb!.insert(tableName, usersModel.toMAp());
   }
 
 // Updata Users
-  Future<int> updataUser(UsersModel usersModel) async {
+  Future<int> updataUser(UsersModel usersModel, int? id) async {
     Database? mydb = await db;
     return await mydb!.update(tableName, usersModel.toMAp(),
-        where: '$columnID=?', whereArgs: [usersModel.id]);
+        where: 'id=$id', whereArgs: [usersModel.id]);
   }
 
 // Delete Users
   Future<int> deleteUser(UsersModel usersModel) async {
     Database? mydb = await db;
     return await mydb!
-        .delete(tableName, where: '$columnID=?', whereArgs: [usersModel.id]);
+        .delete(tableName, where: 'id=?', whereArgs: [usersModel.id]);
   }
 
 // Get All Users
@@ -135,6 +122,7 @@ class DBMatser {
         columnEmail,
         columnPhone,
         columnRole,
+        columnImage
       ],
     );
     if (maps.isNotEmpty) {
@@ -161,21 +149,19 @@ class DBMatser {
     Database? mydb = await db;
     List<Map<String, dynamic>> maps =
         await mydb!.query(tableName, where: "$columnID=?", whereArgs: [id]);
-    if (maps.isNotEmpty) {
-      return UsersModel.fromMap(maps.first);
-    }
-    return null;
+
+    return maps.isNotEmpty ? UsersModel.fromMap(maps.first) : null;
   }
 
 // User Exists Function
-  Future<bool> userExists(String username, String password) async {
+  Future<UsersModel?> userIsExists(String username, String password) async {
     Database? mydb = await db;
-    final res = await mydb!.query(tableName,
-        where: '$columnUsername LIKE ? AND $columnPassword LIKE  ?',
+    final List<Map<String, dynamic>> maps = await mydb!.query(tableName,
+        where: '$columnUsername = ? AND $columnPassword =  ?',
         whereArgs: [
           username,
           password,
         ]);
-    return res.isNotEmpty;
+    return maps.isNotEmpty ? UsersModel.fromMap(maps.first) : null;
   }
 }

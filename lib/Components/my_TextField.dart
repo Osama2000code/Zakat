@@ -3,13 +3,15 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class MyTextField extends StatelessWidget {
   final String label;
+  late String? error;
   final bool obscureText;
   final IconData icon;
   final TextInputType textInputType;
   final TextEditingController controller;
 
-  const MyTextField({
+  MyTextField({
     super.key,
+    this.error,
     required this.icon,
     required this.textInputType,
     required this.obscureText,
@@ -27,6 +29,7 @@ class MyTextField extends StatelessWidget {
         obscureText: obscureText,
         keyboardType: textInputType,
         decoration: InputDecoration(
+          errorText: error,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(5),
             borderSide: BorderSide(

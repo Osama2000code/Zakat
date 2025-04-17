@@ -6,105 +6,6 @@ import 'package:zakat_app/DataBase/Helpers/DBConnction.dart';
 import 'package:zakat_app/DataBase/Models/users_model.dart';
 import 'package:zakat_app/Pages/Auth/Login.dart';
 
-// class RagsterPage extends StatefulWidget {
-//   const RagsterPage({super.key});
-
-//   @override
-//   State<RagsterPage> createState() => _RagsterPageState();
-// }
-
-// class _RagsterPageState extends State<RagsterPage> {
-//   TextEditingController phoneNmuber = TextEditingController();
-//   TextEditingController password = TextEditingController();
-//   TextEditingController conformPassword = TextEditingController();
-
-//   void ragster() {
-// // Auth Code
-
-// // Nav
-//     Navigator.push(
-//         context,
-//         MaterialPageRoute(
-//           builder: (context) => const HomePage(),
-//         ));
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       backgroundColor: Theme.of(context).colorScheme.background,
-//       body: Container(
-//         padding: const EdgeInsets.all(15),
-//         margin: const EdgeInsets.all(7),
-//         child: Column(
-//           mainAxisAlignment: MainAxisAlignment.center,
-//           children: [
-//             // Image Logog
-//             ClipRRect(
-//               borderRadius: BorderRadius.circular(6.0),
-//               child: Image.asset(
-//                 "assets/images/First-Logog-In-Login-Ragster.jpg",
-//                 height: 150,
-//                 width: 150,
-//               ),
-//             ),
-
-//             MyTextField(
-//               controller: phoneNmuber,
-//               label: "Phone Number",
-//               obscureText: false,
-//               icon: Icons.person,
-//             ),
-//             //textfild -2
-//             MyTextField(
-//               icon: Icons.key,
-//               controller: password,
-//               label: "Password",
-//               obscureText: true,
-//             ),
-//             //textfild -1
-
-//             MyTextField(
-//               icon: Icons.key,
-//               controller: conformPassword,
-//               label: "Conform Password",
-//               obscureText: true,
-//             ),
-//             const SizedBox(
-//               height: 22.0,
-//             ),
-//             // MyBouttom
-//             MyButton(
-//               label: "Ragster",
-//               onTap: ragster,
-//             ),
-//             Center(
-//               child: Row(
-//                 mainAxisAlignment: MainAxisAlignment.center,
-//                 children: [
-//                   const Text("You Have Orady Acounnt "),
-//                   TextButton(
-//                       onPressed: (() => Navigator.push(
-//                             context,
-//                             MaterialPageRoute(
-//                               builder: (context) => const LoginPage(),
-//                             ),
-//                           )),
-//                       child: Text(
-//                         "Login Now ..",
-//                         style: TextStyle(
-//                           color: Theme.of(context).colorScheme.tertiary,
-//                         ),
-//                       ))
-//                 ],
-//               ),
-//             )
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
 class RagsterPage extends StatefulWidget {
   const RagsterPage({super.key});
 
@@ -120,43 +21,60 @@ class _RagsterPageState extends State<RagsterPage> {
   TextEditingController phone = TextEditingController();
   TextEditingController conformPassword = TextEditingController();
   DBMatser db = DBMatser();
+  String _message = '';
+  String _messageEx = '';
   bool isfound = false;
 
   void reagster() async {
-    UsersModel usersModel = UsersModel(
-      id: null,
+    UsersModel? usersModel = UsersModel(
       username: username.text,
       password: password.text,
       email: email.text,
       phone: phone.text,
-      role: 'ADMIN',
+      image: 'N',
+      role: '0',
     );
-    isfound = await db.userExists(username.text, password.text);
-    if (isfound) {
-      print("It IS Founded\n\n\n");
-    } else if (!isfound) {
-      await db.savaUser(usersModel);
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => const LoginPage()));
+    if (password.text == conformPassword.text) {
+      UsersModel? ifuserFounded;
+      ifuserFounded = await db.userIsExists(username.text, password.text);
+      if (usersModel != ifuserFounded) {
+        await db.savaUser(usersModel);
+        isfound = true;
+      } else {
+        _messageEx = "موجود هاذا الحساب بل فعل ";
+      }
     } else {
-      print("Erorrrr-------------------------------------\n\n\n");
+      _message = "لا يوجد تطابقفي كلمة المرور ";
     }
-    // int respones = await db.insertData('Users', {
-    //   'username': username.text,
-    //   'password': password.text,
-    //   'email': email.text,
-    //   'phone': phone.text,
-    // });
-    // if (respones > 0) {
-    //   print("----------------------------------------------add");
-    //   Navigator.push(
-    //       context,
-    //       MaterialPageRoute(
-    //         builder: (context) => const Test(),
-    //       ));
-    // } else {
-    //   print("it Was Erorrr---------------------------------");
-    // }
+    if (isfound) {
+      Navigator.push(context,
+          MaterialPageRoute(builder: ((context) => const LoginPage())));
+    } else {
+      errorShow(_messageEx);
+    }
+  }
+
+  errorShow(String me) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Container(
+          padding: const EdgeInsets.all(8.0),
+          margin: const EdgeInsets.all(5.0),
+          child: AlertDialog(
+            title: const Text("تنبية"),
+            content: Text(
+              me,
+              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+            ),
+            icon: const Icon(
+              Icons.error,
+              color: Colors.red,
+            ),
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -236,6 +154,7 @@ class _RagsterPageState extends State<RagsterPage> {
                       height: 10,
                     ),
                     MyTextField(
+                      error: _message,
                       textInputType: TextInputType.text,
                       icon: Icons.check,
                       obscureText: true,
@@ -260,7 +179,7 @@ class _RagsterPageState extends State<RagsterPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  "You Have not Acounnt ",
+                  "لدي حساب بلفعل  ",
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.inversePrimary,
                   ),
