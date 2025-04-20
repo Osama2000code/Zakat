@@ -38,6 +38,8 @@ class _ProfileViewState extends State<ProfileView> {
         ),
         centerTitle: true,
         elevation: 0.0,
+        foregroundColor: Theme.of(context).colorScheme.inverseSurface,
+
         backgroundColor: Theme.of(context).colorScheme.background,
       ),
       body: Padding(

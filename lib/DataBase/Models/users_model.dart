@@ -2,19 +2,18 @@ class UsersModel {
   late int? id;
   late String username;
   late String password;
-  late String image;
+  late String? image;
   late String email;
   late String phone;
-  late String role;
-  UsersModel({
-    required this.username,
-    required this.password,
-    required this.image,
-    required this.email,
-    required this.phone,
-    this.id,
-    required this.role,
-  });
+  late String? role;
+  UsersModel(
+      {this.image,
+      this.id,
+      this.role,
+      required this.username,
+      required this.password,
+      required this.email,
+      required this.phone});
 
   factory UsersModel.fromMap(Map<String, dynamic> maps) => UsersModel(
         id: maps['id'],

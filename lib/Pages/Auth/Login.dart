@@ -37,32 +37,6 @@ class _LoginPageState extends State<LoginPage> {
   //   });
   // }
 
-  void login() async {
-    if (true) {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const App(),
-          ));
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text("_message"),
-          action: SnackBarAction(
-            label: "Sing Up",
-            onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const RagsterPage(),
-                  ));
-            },
-          ),
-        ),
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
@@ -132,10 +106,12 @@ class _LoginPageState extends State<LoginPage> {
                   context: context,
                   builder: (context) {
                     return AlertDialog(
-                      title: const Center(child: Text("Ops...")),
+                      title: const Center(child: Text("عذرا ")),
                       titlePadding: const EdgeInsets.all(5),
-                      content:
-                          const Text("No Such User Found , Create User Know"),
+                      content: const Text(
+                        "لا يوجد مستخدم بهاذا الاسم يرجاء انشاء حساب اولا ",
+                        textAlign: TextAlign.right,
+                      ),
                       actions: [
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -148,11 +124,11 @@ class _LoginPageState extends State<LoginPage> {
                                       builder: (context) => const RagsterPage(),
                                     ));
                               },
-                              child: const Text("Create User"),
+                              child: const Text("انشاء حساب "),
                             ),
                             TextButton(
                               onPressed: () => Navigator.pop(context),
-                              child: const Text("No !"),
+                              child: const Text("ربما لاحفا "),
                             ),
                           ],
                         )

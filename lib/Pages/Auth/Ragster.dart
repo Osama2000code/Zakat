@@ -44,7 +44,7 @@ class _RagsterPageState extends State<RagsterPage> {
         _messageEx = "موجود هاذا الحساب بل فعل ";
       }
     } else {
-      _message = "لا يوجد تطابقفي كلمة المرور ";
+      _message = "لا يوجد تطابق في كلمة المرور ";
     }
     if (isfound) {
       Navigator.push(context,

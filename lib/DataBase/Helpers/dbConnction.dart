@@ -96,10 +96,14 @@ CREATE TABLE applicants (
   }
 
 // Updata Users
-  Future<int> updataUser(UsersModel usersModel, int? id) async {
+  Future<int> updataUser(UsersModel usersModel ) async {
     Database? mydb = await db;
-    return await mydb!.update(tableName, usersModel.toMAp(),
-        where: 'id=$id', whereArgs: [usersModel.id]);
+    return  mydb!.update(
+      "Users",
+      usersModel.toMAp(),
+      where: 'id=?',
+      whereArgs: [usersModel.id],
+    );
   }
 
 // Delete Users
@@ -145,7 +149,7 @@ CREATE TABLE applicants (
   }
 
 // Get User Aftoer Logined in
-  Future<UsersModel?> getUser(int id) async {
+  Future<UsersModel?> getUser(int? id) async {
     Database? mydb = await db;
     List<Map<String, dynamic>> maps =
         await mydb!.query(tableName, where: "$columnID=?", whereArgs: [id]);

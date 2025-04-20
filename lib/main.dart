@@ -12,10 +12,10 @@ void main() {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (context) => ThemeProviders(),
+          create: (context) => UserProvider(),
         ),
         ChangeNotifierProvider(
-          create: (context) => UserProvider(),
+          create: (context) => ThemeProviders(),
         ),
       ],
       child: const MyApp(),

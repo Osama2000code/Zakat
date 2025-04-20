@@ -61,7 +61,7 @@ class _TestState extends State<Test> {
                     Text(element.username),
                   ),
                   DataCell(
-                    Text(element.role),
+                    Text(element.role!),
                   ),
                 ],
               ),

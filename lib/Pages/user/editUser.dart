@@ -7,6 +7,7 @@ import 'package:zakat_app/Components/my_TextField.dart';
 import 'package:zakat_app/DataBase/Helpers/dbConnction.dart';
 import 'package:zakat_app/DataBase/Models/users_model.dart';
 import 'package:zakat_app/Services/user_provider.dart';
+import 'package:zakat_app/app.dart';
 
 class EditUser extends StatefulWidget {
   late UsersModel? usersModel;
@@ -20,55 +21,46 @@ class EditUser extends StatefulWidget {
 }
 
 class _EditUserState extends State<EditUser> {
-  DBMatser db = DBMatser();
+  late var db;
+  late UsersModel updatedUser;
+  int res = 0;
   TextEditingController username = TextEditingController();
   TextEditingController password = TextEditingController();
   TextEditingController email = TextEditingController();
   TextEditingController phone = TextEditingController();
-  late UsersModel userUpdata = widget.usersModel!;
-  void editUser() async {
-    userUpdata = UsersModel(
-      id: null,
-      username: username.text,
-      password: password.text,
-      image: 'N',
-      email: email.text,
-      phone: phone.text,
-      role: widget.usersModel!.role == '1' ? '1' : '0',
-    );
-    int res = await db.updataUser(userUpdata, widget.usersModel!.id);
-    if (res > 0) {
-      showAlert("Done");
-      Future.delayed(
-        const Duration(seconds: 2),
-      );
-      Navigator.pop(context);
-    } else {
-      showAlert("Erorr");
-      Future.delayed(
-        const Duration(seconds: 3),
-      );
+  Future<void> _updatedData(int? userId) async {
+    updatedUser = UsersModel(
+        id: userId,
+        username: username.text,
+        password: password.text,
+        email: email.text,
+        phone: phone.text,
+        image: 'N',
+        role: "0");
+    res = await db.updataUser(updatedUser);
+    if (res == 0) {
+      showSnak("خطاء");
     }
   }
 
-  showAlert(String ms) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text(ms),
-          content: Icon(
-            Icons.done,
-            size: 100,
-            color: Theme.of(context).colorScheme.primary,
+  showSnak(String ms) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: ms == "خطاء " ? Colors.red : Colors.green,
+        content: Text(
+          ms,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 
   @override
   void initState() {
+    db = DBMatser();
     username.text = widget.usersModel!.username;
     password.text = widget.usersModel!.password;
     email.text = widget.usersModel!.email;
@@ -84,6 +76,7 @@ class _EditUserState extends State<EditUser> {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
+        foregroundColor: Theme.of(context).colorScheme.inverseSurface,
         title: Text(
           "تعديل البيانات الشخصية  ",
           style: TextStyle(color: Theme.of(context).colorScheme.inverseSurface),
@@ -133,34 +126,17 @@ class _EditUserState extends State<EditUser> {
                         textInputType: TextInputType.number,
                         obscureText: false,
                         controller: phone,
-                        label: "Emial",
+                        label: "phone",
+                      ),
+                      MyTextField(
+                        icon: Icons.email,
+                        textInputType: TextInputType.emailAddress,
+                        obscureText: false,
+                        controller: email,
+                        label: "Email",
                       ),
                       const SizedBox(
                         height: 13,
-                      ),
-                      RadioListTile(
-                        title: const Text("User Is USER"),
-                        subtitle: Text(user.role),
-                        selected: user.role == '0' ? true : false,
-                        value: '0',
-                        groupValue: user.role,
-                        onChanged: (value) {
-                          setState(() {
-                            user.role = value!;
-                          });
-                        },
-                      ),
-                      RadioListTile(
-                        title: const Text("User Is Admin"),
-                        subtitle: Text(user.role),
-                        selected: user.role == '1' ? true : false,
-                        value: '1',
-                        groupValue: user.role,
-                        onChanged: (value) {
-                          setState(() {
-                            user.role = value!;
-                          });
-                        },
                       ),
                     ],
                   ),
@@ -168,18 +144,23 @@ class _EditUserState extends State<EditUser> {
               ],
             ),
           ),
-          const Spacer(),
           MyButton(
             label: "حفظ البيانات ",
             onTap: () async {
-              // print(widget.usersModel!.id);
-
-              print(userUpdata.toMAp());
-
-              // editUser();
-              setState(() {
-                editUser();
-              });
+              await Future.delayed(
+                Duration(seconds: 1),
+                () {
+                  showSnak('تمت العملية ');
+                  _updatedData(widget.usersModel!.id);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => App(),
+                      ));
+                },
+              );
+              // After Data Updated Stor In User Sesstion Proveder
+              userProvider.setUser(updatedUser);
             },
           )
         ],

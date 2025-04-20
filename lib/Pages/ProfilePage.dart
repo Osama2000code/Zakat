@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:zakat_app/DataBase/Helpers/dbConnction.dart';
-import 'package:zakat_app/Pages/ZakatProjectsPage.dart';
+import 'package:zakat_app/Pages/Admin/index.dart';
 import 'package:zakat_app/Pages/settingsPage.dart';
 import 'package:zakat_app/Pages/user/view.dart';
 import 'package:zakat_app/Services/user_provider.dart';
@@ -34,7 +34,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 context,
                 MaterialPageRoute(
                   // go to Admin dashboard
-                  builder: (context) => const ZakatScreen(),
+                  builder: (context) => const AdminView(),
                 ));
           },
           leading: const Icon(Icons.dashboard),
@@ -58,7 +58,9 @@ class _ProfilePageState extends State<ProfilePage> {
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
+
       appBar: AppBar(
+        foregroundColor: Theme.of(context).colorScheme.inverseSurface,
         centerTitle: true,
         title: Text(
           "Profile",
