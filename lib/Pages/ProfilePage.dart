@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:zakat_app/DataBase/Helpers/dbConnction.dart';
 import 'package:zakat_app/Pages/Admin/index.dart';
 import 'package:zakat_app/Pages/settingsPage.dart';
+import 'package:zakat_app/Pages/user/addApplicants.dart';
 import 'package:zakat_app/Pages/user/view.dart';
 import 'package:zakat_app/Services/user_provider.dart';
 
@@ -38,6 +39,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 ));
           },
           leading: const Icon(Icons.dashboard),
+          tileColor: Theme.of(context).colorScheme.onBackground,
           title: const Text("لوحة التحكم "),
         );
       } else {
@@ -52,6 +54,8 @@ class _ProfilePageState extends State<ProfilePage> {
           },
           leading: const Icon(Icons.info),
           title: const Text("البيانات الشخصية   "),
+          tileColor: Theme.of(context).colorScheme.onBackground,
+          trailing: Icon(Icons.navigate_next),
         );
       }
     }
@@ -60,7 +64,6 @@ class _ProfilePageState extends State<ProfilePage> {
       backgroundColor: Theme.of(context).colorScheme.background,
 
       appBar: AppBar(
-        foregroundColor: Theme.of(context).colorScheme.inverseSurface,
         centerTitle: true,
         title: Text(
           "Profile",
@@ -118,7 +121,9 @@ class _ProfilePageState extends State<ProfilePage> {
           const Divider(),
           showUser(),
           ListTile(
-            title: const Text("Seeting"),
+            title: const Text("الاعدادات"),
+            trailing: Icon(Icons.navigate_next),
+            tileColor: Theme.of(context).colorScheme.onBackground,
             leading: const Icon(Icons.settings_ethernet),
             onTap: () {
               Navigator.push(
@@ -129,7 +134,24 @@ class _ProfilePageState extends State<ProfilePage> {
             },
           ),
           ListTile(
+            title: Text("تقديم طلب "),
+            leading: Icon(Icons.health_and_safety),
+            trailing: Icon(Icons.navigate_next),
+            tileColor: Theme.of(context).colorScheme.onBackground,
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AddApplicants(
+                      user: user,
+                    ),
+                  ));
+            },
+          ),
+          ListTile(
             title: const Text("تسجيل الخروج "),
+            trailing: Icon(Icons.exit_to_app_outlined),
+            tileColor: Theme.of(context).colorScheme.onBackground,
             leading: const Icon(
               Icons.exit_to_app,
               color: Colors.red,

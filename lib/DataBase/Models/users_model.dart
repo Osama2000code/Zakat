@@ -1,8 +1,10 @@
+import 'package:flutter/foundation.dart';
+
 class UsersModel {
   late int? id;
   late String username;
   late String password;
-  late String? image;
+  late Uint8List? image;
   late String email;
   late String phone;
   late String? role;

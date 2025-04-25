@@ -35,7 +35,7 @@ class _EditUserState extends State<EditUser> {
         password: password.text,
         email: email.text,
         phone: phone.text,
-        image: 'N',
+        image: null,
         role: "0");
     res = await db.updataUser(updatedUser);
     if (res == 0) {
@@ -48,6 +48,7 @@ class _EditUserState extends State<EditUser> {
       SnackBar(
         backgroundColor: ms == "خطاء " ? Colors.red : Colors.green,
         content: Text(
+          textAlign: TextAlign.center,
           ms,
           style: TextStyle(
             fontWeight: FontWeight.bold,

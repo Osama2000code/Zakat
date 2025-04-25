@@ -1,25 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:zakat_app/DataBase/Helpers/dbConnction.dart';
-import 'package:zakat_app/DataBase/Models/projects%20_Model.dart';
-import 'package:zakat_app/Pages/Admin/projectMange/addProject.dart';
+import 'package:zakat_app/DataBase/Models/payment_model.dart';
+import 'package:zakat_app/Pages/Admin/paymentMange/addPayment.dart';
 
-class ProjctsView extends StatefulWidget {
-  const ProjctsView({super.key});
+class PaymentView extends StatefulWidget {
+  const PaymentView({super.key});
 
   @override
-  State<ProjctsView> createState() => _ProjctsViewState();
+  State<PaymentView> createState() => _PaymentViewState();
 }
 
-class _ProjctsViewState extends State<ProjctsView> {
-  late Future<List<ProjectModel>> projctsList;
-  getData() {
+class _PaymentViewState extends State<PaymentView> {
+  late Future<List<PaymentModel>> payList;
+  getDate() async {
     DBMatser db = DBMatser();
     setState(() {
-      projctsList = db.getAllProjects();
+      payList = db.getAllPayment();
     });
   }
 
-  SingleChildScrollView listProjctView(List<ProjectModel> projectList) {
+  SingleChildScrollView listProjctView(List<PaymentModel> paymentmodel) {
     return SingleChildScrollView(
       scrollDirection: Axis.vertical,
       child: DataTable(
@@ -28,32 +28,30 @@ class _ProjctsViewState extends State<ProjctsView> {
             label: Text("ID"),
           ),
           DataColumn(
-            label: Text("Projct Name"),
+            label: Text("Pyment Name"),
           ),
           DataColumn(
             label: Text("Image"),
           ),
-          DataColumn(
-            label: Text("Actions"),
-          ),
+          DataColumn(label: Text("Actions"))
         ],
-        rows: projectList
+        rows: paymentmodel
             .map(
               (e) => DataRow(
                 cells: [
                   DataCell(
                     Text(
-                      e.projectID.toString(),
+                      e.payID.toString(),
                     ),
                   ),
                   DataCell(
                     Text(
-                      e.projectName,
+                      e.paymentName,
                     ),
                   ),
                   DataCell(
                     Image.memory(
-                      e.projectImage!,
+                      e.paymentImage!,
                       height: 50,
                       width: 50,
                     ),
@@ -132,7 +130,8 @@ class _ProjctsViewState extends State<ProjctsView> {
 
   @override
   void initState() {
-    getData();
+    getDate();
+    // TODO: implement initState
     super.initState();
   }
 
@@ -141,25 +140,21 @@ class _ProjctsViewState extends State<ProjctsView> {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
-        title: Text("المشاريع "),
+        foregroundColor: Theme.of(context).colorScheme.inverseSurface,
+        backgroundColor: Theme.of(context).colorScheme.background,
+        title: Text("Payment"),
         centerTitle: true,
         elevation: 0.0,
-        backgroundColor: Theme.of(context).colorScheme.background,
-        foregroundColor: Theme.of(context).colorScheme.inverseSurface,
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Theme.of(context).colorScheme.secondary,
         onPressed: () {
           Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AddProject(),
+                builder: (context) => AddPayment(),
               ));
         },
-        child: Icon(
-          Icons.add,
-          color: Theme.of(context).colorScheme.primary,
-        ),
+        child: Icon(Icons.add),
       ),
       body: ListView(
         scrollDirection: Axis.horizontal,
@@ -169,7 +164,7 @@ class _ProjctsViewState extends State<ProjctsView> {
             padding: const EdgeInsets.all(8.0),
             height: double.infinity,
             child: FutureBuilder(
-              future: projctsList,
+              future: payList,
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   return listProjctView(snapshot.data!);

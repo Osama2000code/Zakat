@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:zakat_app/DataBase/Helpers/dbConnction.dart';
 import 'package:zakat_app/DataBase/Models/users_model.dart';
+import 'package:zakat_app/Pages/Admin/usersMang/editUser.dart';
 
 class UsersViwe extends StatefulWidget {
   const UsersViwe({super.key});
@@ -61,14 +62,57 @@ class _UsersViweState extends State<UsersViwe> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         IconButton(
-                          onPressed: null,
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      EditUserAdmin(usersModel: element),
+                                ));
+                          },
                           icon: Icon(
                             Icons.edit,
                             color: Colors.green,
                           ),
                         ),
-                         IconButton(
-                          onPressed: null,
+                        IconButton(
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: Center(
+                                  child: Text("عملية حذف "),
+                                ),
+                                content: Text("هل انت متاكد في عملية الحذف "),
+                                actions: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      IconButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        icon: Icon(
+                                          Icons.cancel,
+                                          color: Colors.red,
+                                        ),
+                                      ),
+                                      IconButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        icon: Icon(
+                                          Icons.save,
+                                          color: Colors.green,
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
                           icon: Icon(
                             Icons.delete_forever_rounded,
                             color: Color.fromARGB(255, 245, 160, 154),

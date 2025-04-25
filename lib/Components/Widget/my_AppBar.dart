@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:zakat_app/Pages/ProfilePage.dart';
 import 'package:zakat_app/Pages/settingsPage.dart';
+import 'package:zakat_app/Pages/user/view.dart';
 
 class Header extends StatelessWidget {
   final String userName;
@@ -28,7 +28,7 @@ class Header extends StatelessWidget {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const ProfilePage()));
+                          builder: (context) => const ProfileView()));
                 },
                 child: ClipOval(
                   child: Image.asset(

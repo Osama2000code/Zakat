@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:zakat_app/Pages/HomePage.dart';
+import 'package:zakat_app/Pages/ProfilePage.dart';
 import 'package:zakat_app/Pages/ZakatPage.dart';
-import 'package:zakat_app/Pages/settingsPage.dart';
 
 class App extends StatefulWidget {
   const App({super.key});
@@ -11,11 +11,11 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
-   int selectedIndex = 0;
-  final List pages = [const HomePage(), const ZakatPage(), const SettingPage()];
+  int selectedIndex = 0;
+  final List pages = [const HomePage(), const ZakatPage(), const ProfilePage()];
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
+    return Scaffold(
       body: pages[selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: selectedIndex,
@@ -34,8 +34,8 @@ class _AppState extends State<App> {
             label: "Zakat",
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: "Settings",
+            icon: Icon(Icons.person),
+            label: "Account",
           ),
         ],
       ),

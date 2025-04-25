@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:zakat_app/Components/my_ButtonGride.dart';
+import 'package:zakat_app/Pages/Admin/applicantsMange/index.dart';
+import 'package:zakat_app/Pages/Admin/paymentMange/index.dart';
 import 'package:zakat_app/Pages/Admin/projectMange/view.dart';
 import 'package:zakat_app/Pages/Admin/usersMang/index.dart';
+import 'package:zakat_app/Pages/Admin/zakatMange/index.dart';
 
 class AdminView extends StatefulWidget {
   const AdminView({super.key});
@@ -49,9 +52,37 @@ class _AdminViewState extends State<AdminView> {
               iconB: Icons.work_outline_sharp,
             ),
             MyButtonGride(
-              onTapB: () {},
+              onTapB: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ViewApplicants(),
+                    ));
+              },
               title: "الطلبات",
               iconB: Icons.people_alt_rounded,
+            ),
+            MyButtonGride(
+              onTapB: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PaymentView(),
+                    ));
+              },
+              title: "المحافظ الاكترونية ",
+              iconB: Icons.payment,
+            ),
+            MyButtonGride(
+              onTapB: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ZakatAdminView(),
+                    ));
+              },
+              title: "محصل الزكاة  ",
+              iconB: Icons.mosque,
             ),
           ],
         ),

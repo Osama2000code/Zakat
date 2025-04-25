@@ -31,7 +31,7 @@ class _RagsterPageState extends State<RagsterPage> {
       password: password.text,
       email: email.text,
       phone: phone.text,
-      image: 'N',
+      image: null,
       role: '0',
     );
     if (password.text == conformPassword.text) {

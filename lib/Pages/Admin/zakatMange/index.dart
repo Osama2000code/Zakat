@@ -1,25 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:zakat_app/DataBase/Helpers/dbConnction.dart';
-import 'package:zakat_app/DataBase/Models/projects%20_Model.dart';
-import 'package:zakat_app/Pages/Admin/projectMange/addProject.dart';
+import 'package:zakat_app/DataBase/Models/zkata_model.dart';
 
-class ProjctsView extends StatefulWidget {
-  const ProjctsView({super.key});
+class ZakatAdminView extends StatefulWidget {
+  const ZakatAdminView({super.key});
 
   @override
-  State<ProjctsView> createState() => _ProjctsViewState();
+  State<ZakatAdminView> createState() => _ZakatAdminViewState();
 }
 
-class _ProjctsViewState extends State<ProjctsView> {
-  late Future<List<ProjectModel>> projctsList;
-  getData() {
-    DBMatser db = DBMatser();
+class _ZakatAdminViewState extends State<ZakatAdminView> {
+  DBMatser db = DBMatser();
+  late Future<List<ZakatModel>> zakatList;
+  getData() async {
     setState(() {
-      projctsList = db.getAllProjects();
+      zakatList = db.getAllZakat();
     });
   }
 
-  SingleChildScrollView listProjctView(List<ProjectModel> projectList) {
+  SingleChildScrollView listProjctView(List<ZakatModel> zakatlist) {
     return SingleChildScrollView(
       scrollDirection: Axis.vertical,
       child: DataTable(
@@ -28,35 +27,31 @@ class _ProjctsViewState extends State<ProjctsView> {
             label: Text("ID"),
           ),
           DataColumn(
-            label: Text("Projct Name"),
+            label: Text("بيانات الزكاة"),
           ),
           DataColumn(
-            label: Text("Image"),
+            label: Text("تاريخ"),
           ),
           DataColumn(
             label: Text("Actions"),
-          ),
+          )
         ],
-        rows: projectList
+        rows: zakatlist
             .map(
               (e) => DataRow(
                 cells: [
                   DataCell(
                     Text(
-                      e.projectID.toString(),
+                      e.zakatID.toString(),
                     ),
                   ),
                   DataCell(
                     Text(
-                      e.projectName,
+                      e.zakatDetels!,
                     ),
                   ),
                   DataCell(
-                    Image.memory(
-                      e.projectImage!,
-                      height: 50,
-                      width: 50,
-                    ),
+                    Text(e.zakatDate!),
                   ),
                   DataCell(
                     Row(
@@ -68,7 +63,7 @@ class _ProjctsViewState extends State<ProjctsView> {
                             //     context,
                             //     MaterialPageRoute(
                             //       builder: (context) =>
-                            //           EditUserAdmin(usersModel: element),
+                            //           // EditUserAdmin(usersModel: element),
                             //     ));
                           },
                           icon: Icon(
@@ -141,25 +136,11 @@ class _ProjctsViewState extends State<ProjctsView> {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
-        title: Text("المشاريع "),
+        title: Text("زكاة "),
         centerTitle: true,
         elevation: 0.0,
-        backgroundColor: Theme.of(context).colorScheme.background,
         foregroundColor: Theme.of(context).colorScheme.inverseSurface,
-      ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Theme.of(context).colorScheme.secondary,
-        onPressed: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => AddProject(),
-              ));
-        },
-        child: Icon(
-          Icons.add,
-          color: Theme.of(context).colorScheme.primary,
-        ),
+        backgroundColor: Theme.of(context).colorScheme.background,
       ),
       body: ListView(
         scrollDirection: Axis.horizontal,
@@ -169,7 +150,7 @@ class _ProjctsViewState extends State<ProjctsView> {
             padding: const EdgeInsets.all(8.0),
             height: double.infinity,
             child: FutureBuilder(
-              future: projctsList,
+              future: zakatList,
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   return listProjctView(snapshot.data!);

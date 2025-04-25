@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:zakat_app/Components/Widget/my_AppBar.dart';
 import 'package:zakat_app/Components/Widget/my_CustomCardAds.dart';
 import 'package:zakat_app/Components/Widget/my_CustomCardInfo.dart';
-import 'package:zakat_app/Components/Widget/my_DonationGrid.dart';
-import 'package:zakat_app/Components/Widget/my_bottomNavigationBar.dart';
-import 'package:zakat_app/Pages/ZakatPage.dart';
+import 'package:zakat_app/DataBase/Helpers/dbConnction.dart';
+import 'package:zakat_app/DataBase/Models/projects%20_Model.dart';
 import 'package:zakat_app/Pages/ZakatProjectsPage.dart';
-import 'package:zakat_app/Pages/settingsPage.dart';
+import 'package:zakat_app/Pages/allZakatPage.dart';
+import 'package:zakat_app/Pages/calculatorZakatPage.dart';
+import 'package:zakat_app/Pages/user/addApplicants.dart';
+import 'package:zakat_app/Services/user_provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({
@@ -18,9 +21,25 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
- 
+  late Future<List<ProjectModel>> projectList;
+  getData() async {
+    DBMatser db = DBMatser();
+    setState(() {
+      projectList = db.getAllProjects();
+    });
+  }
+
+  @override
+  void initState() {
+    getData();
+    // TODO: implement initState
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    final user = userProvider.currentUser;
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       body: Container(
@@ -28,9 +47,9 @@ class _HomePageState extends State<HomePage> {
         margin: const EdgeInsets.all(8.0),
         child: ListView(
           children: [
-            const Header(
-              userName: "Osama",
-              subtitle: "OsamaSimer",
+            Header(
+              userName: user!.username,
+              subtitle: user.email,
               profileImageUrl: 'assets/images/First-Logog-In-Login-Ragster.jpg',
             ),
 
@@ -51,60 +70,57 @@ class _HomePageState extends State<HomePage> {
                 ],
                 color: Theme.of(context).colorScheme.background,
               ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
                 children: [
-                  //Card info Start
-                  Expanded(
-                    child: MyCustomCardInfo(
-                      backRoundColor: Theme.of(context).colorScheme.background,
-                      leftIcon: Icons.wallet,
-                      rghteIcon: Icons.add,
-                      subTitle: Text(
-                        'Dn: \$254.46.8',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14,
-                          color: Theme.of(context).colorScheme.inverseSurface,
-                        ),
-                      ),
-                      mainTitle: Text(
-                        'Zkat',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Theme.of(context).colorScheme.inversePrimary,
-                        ),
-                      ),
-                    ),
-                  ),
-                  // Tow 222
-                  Expanded(
-                    child: MyCustomCardInfo(
-                      backRoundColor: Theme.of(context).colorScheme.secondary,
-                      leftIcon: Icons.person,
-                      mainTitle: SizedBox(
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 8.0),
-                          child: Text(
-                            'More Indo More IndoMore',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Theme.of(context).colorScheme.primary,
-                            ),
-                          ),
-                        ),
-                      ),
-                      rghteIcon: Icons.arrow_forward,
-                      subTitle: Text(
-                        'ghjjt',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Theme.of(context).colorScheme.inversePrimary,
-                        ),
-                      ),
-                    ),
-                  ),
                   //Card info End
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AddApplicants(user: user),
+                          ));
+                    },
+                    child: MyCustomCardInfo(
+                      icon: Icons.document_scanner,
+                      title: "تقديم الطلب ",
+                    ),
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => AllZakatPage(),
+                        ),
+                      );
+                    },
+                    child: MyCustomCardInfo(
+                      icon: Icons.work_outline,
+                      title: " المشاريع  ",
+                    ),
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CalculatorZakatPage(),
+                        ),
+                      );
+                    },
+                    child: MyCustomCardInfo(
+                      icon: Icons.calculate,
+                      title: " حاسبة الزكاة  ",
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -137,10 +153,11 @@ class _HomePageState extends State<HomePage> {
                 TextButton(
                   onPressed: (() {
                     Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const ZakatProjectsPage(),
-                        ));
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AllZakatPage(),
+                      ),
+                    );
                   }),
                   child: Text(
                     "View More",
@@ -156,39 +173,103 @@ class _HomePageState extends State<HomePage> {
             const SizedBox(
               height: 6,
             ),
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.start,
-            //   children: [
-            //     Container(
-            //       padding: const EdgeInsets.all(10.0),
-            //       margin: const EdgeInsets.symmetric(horizontal: 5.0),
-            //       decoration: BoxDecoration(
-            //           borderRadius: BorderRadius.circular(10),
-            //           border: Border.all(
-            //             color: Theme.of(context).colorScheme.inversePrimary,
-            //           )),
-            //       child: const Text("Data"),
-            //     ),
-            //     Container(
-            //       width: 80,
-            //       padding: const EdgeInsets.all(8.0),
-            //       decoration: BoxDecoration(
-            //         color: Theme.of(context).colorScheme.primary,
-            //         borderRadius: BorderRadius.circular(10),
-            //       ),
-            //       child: const Text("Data"),
-            //     ),
-            //   ],
-            // ),
+
             const SizedBox(
               height: 10,
             ),
-            // const MyDonationGrid(),
-         
+            Container(
+              height: 500,
+              width: 300,
+              child: FutureBuilder(
+                future: projectList,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return ListView.builder(
+                      scrollDirection: Axis.vertical,
+                      itemCount: snapshot.data!.length,
+                      itemBuilder: (context, index) {
+                        final items = snapshot.data![index];
+                        return Container(
+                          height: 100,
+                          width: 200,
+                          margin: EdgeInsets.all(8.0),
+                          decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.onBackground,
+                              borderRadius: BorderRadius.circular(15),
+                              boxShadow: [
+                                BoxShadow(
+                                  blurRadius: 2,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .inversePrimary,
+                                )
+                              ]),
+                          padding: const EdgeInsets.all(8.0),
+                          child: ListTile(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        ZakatProjectsPage(projectList: items),
+                                  ));
+                            },
+                            leading: Image.memory(
+                              items.projectImage!,
+                              height: 100,
+                              width: 100,
+                              fit: BoxFit.fill,
+                            ),
+                            title: Text(
+                              textAlign: TextAlign.right,
+                              items.projectName,
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            subtitle: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                LinearProgressIndicator(
+                                  value: 0.1,
+                                  minHeight: 5,
+                                  backgroundColor: Theme.of(context)
+                                      .colorScheme
+                                      .inversePrimary,
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                                SizedBox(
+                                  height: 2,
+                                ),
+                                Text(
+                                  items.projectEndDate,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .inversePrimary,
+                                  ),
+                                  textAlign: TextAlign.right,
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  } else if (snapshot.hasError) {
+                    return Text(snapshot.error.toString());
+                  } else {
+                    return Center(child: const CircularProgressIndicator());
+                  }
+                },
+              ),
+            )
           ],
         ),
       ),
-    
     );
   }
 }

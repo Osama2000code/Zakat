@@ -1,23 +1,25 @@
+import 'package:flutter/foundation.dart';
+
 class ProjectModel {
   late int? projectID;
   final String projectName;
-  final String projectDescription;
-  late String projectImage;
-  final double projectTargetAmount;
-  final double projectTargetRaised;
-  final DateTime projectStartDate;
-  final DateTime projectEndDate;
-  final String projectStatus;
+  late String projectDescription;
+  late Uint8List? projectImage;
+  late String projectTargetAmount;
+  late String projectTargetRaised;
+  late String? projectStartDate;
+  late String projectEndDate;
+  late String? projectStatus;
   ProjectModel({
     this.projectID,
     required this.projectName,
     required this.projectDescription,
-    required this.projectImage,
+    this.projectImage,
     required this.projectTargetAmount,
     required this.projectTargetRaised,
-    required this.projectStartDate,
+    this.projectStartDate,
     required this.projectEndDate,
-    required this.projectStatus,
+    this.projectStatus,
   });
   factory ProjectModel.fromMap(Map<String, dynamic> maps) => ProjectModel(
         projectID: maps['project_id'],

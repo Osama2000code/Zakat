@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class MyZkataIconButton extends StatelessWidget {
   final Icon icon;
-  final Function onprees;
+  final Function()? onprees;
   final String title;
   const MyZkataIconButton({
     super.key,
@@ -33,7 +33,7 @@ class MyZkataIconButton extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             IconButton(
-              onPressed: onprees(),
+              onPressed: onprees,
               icon: icon,
             ),
             Text(

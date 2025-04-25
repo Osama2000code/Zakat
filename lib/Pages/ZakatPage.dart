@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:zakat_app/Components/Widget/my_ZkataIconButton.dart';
 import 'package:zakat_app/Components/my_zakatInfo.dart';
+import 'package:zakat_app/DataBase/Helpers/dbConnction.dart';
+import 'package:zakat_app/DataBase/Models/projects%20_Model.dart';
+import 'package:zakat_app/Pages/ZakatProjectsPage.dart';
+import 'package:zakat_app/Pages/calculatorZakatPage.dart';
 
 class ZakatPage extends StatefulWidget {
   const ZakatPage({super.key});
@@ -10,29 +14,26 @@ class ZakatPage extends StatefulWidget {
 }
 
 class _ZakatPageState extends State<ZakatPage> {
+  late Future<List<ProjectModel>> projectList;
+  getData() async {
+    DBMatser db = DBMatser();
+    setState(() {
+      projectList = db.getAllProjects();
+    });
+  }
+
+  @override
+  void initState() {
+    getData();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
-        actions: [
-          IconButton(
-            onPressed: null,
-            icon: Icon(
-              size: 25,
-              Icons.heart_broken_sharp,
-              color: Theme.of(context).colorScheme.primary,
-            ),
-          ),
-          IconButton(
-            onPressed: null,
-            icon: Icon(
-              size: 25,
-              Icons.wallet,
-              color: Theme.of(context).colorScheme.primary,
-            ),
-          ),
-        ],
+        centerTitle: true,
         elevation: 0.0,
         backgroundColor: Theme.of(context).colorScheme.background,
         title: Text(
@@ -41,6 +42,7 @@ class _ZakatPageState extends State<ZakatPage> {
         ),
       ),
       body: ListView(
+        physics: NeverScrollableScrollPhysics(),
         children: [
           Container(
             margin: const EdgeInsets.all(8.0),
@@ -88,36 +90,132 @@ class _ZakatPageState extends State<ZakatPage> {
               scrollDirection: Axis.horizontal,
               children: [
                 MyZkataIconButton(
-                  onprees:(){},
+                  onprees: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CalculatorZakatPage(),
+                        ));
+                  },
                   icon: Icon(
-                    Icons.add,
+                    Icons.calculate,
                     size: 40,
                     color: Theme.of(context).colorScheme.primary,
                   ),
-                  title: "Zakat",
-                ),
-                MyZkataIconButton(
-                  onprees:(){},
-
-                  icon: Icon(
-                    Icons.add,
-                    size: 40,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                  title: "Zakat",
-                ),
-                MyZkataIconButton(
-                  onprees:(){},
-                  icon: Icon(
-                    Icons.add,
-                    size: 40,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                  title: "Zakat",
+                  title: "Calculator",
                 ),
               ],
             ),
-          )
+          ),
+          Divider(
+            thickness: 0.8,
+            endIndent: 5,
+            indent: 5,
+            color: Theme.of(context).colorScheme.primary,
+          ),
+          Container(
+            height: 500,
+            child: ListView(
+              scrollDirection: Axis.vertical,
+              physics: BouncingScrollPhysics(),
+              children: [
+                Container(
+                  height: 500,
+                  width: double.infinity,
+                  child: FutureBuilder(
+                    future: projectList,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        return ListView.builder(
+                          scrollDirection: Axis.vertical,
+                          itemCount: snapshot.data!.length,
+                          itemBuilder: (context, index) {
+                            final items = snapshot.data![index];
+                            return Container(
+                              height: 100,
+                              width: 200,
+                              margin: EdgeInsets.all(8.0),
+                              decoration: BoxDecoration(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onBackground,
+                                  borderRadius: BorderRadius.circular(15),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      blurRadius: 2,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .inversePrimary,
+                                    )
+                                  ]),
+                              padding: const EdgeInsets.all(8.0),
+                              child: ListTile(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => ZakatProjectsPage(
+                                            projectList: items),
+                                      ));
+                                },
+                                leading: Image.memory(
+                                  items.projectImage!,
+                                  height: 100,
+                                  width: 100,
+                                  fit: BoxFit.fill,
+                                ),
+                                title: Text(
+                                  textAlign: TextAlign.right,
+                                  items.projectName,
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                subtitle: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    LinearProgressIndicator(
+                                      value: 0.1,
+                                      minHeight: 5,
+                                      backgroundColor: Theme.of(context)
+                                          .colorScheme
+                                          .inversePrimary,
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
+                                    ),
+                                    SizedBox(
+                                      height: 2,
+                                    ),
+                                    Text(
+                                      items.projectEndDate,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .inversePrimary,
+                                      ),
+                                      textAlign: TextAlign.right,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      } else if (snapshot.hasError) {
+                        return Text(snapshot.error.toString());
+                      } else {
+                        return Center(child: const CircularProgressIndicator());
+                      }
+                    },
+                  ),
+                )
+              ],
+            ),
+          ),
         ],
       ),
     );

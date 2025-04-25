@@ -1,66 +1,47 @@
 import 'package:flutter/material.dart';
 
 class MyCustomCardInfo extends StatelessWidget {
-  final Widget subTitle;
-  final Widget mainTitle;
-  final IconData leftIcon;
-  final IconData rghteIcon;
-  final Color? backRoundColor;
+  final String title;
+  final IconData icon;
   const MyCustomCardInfo({
     super.key,
-    required this.backRoundColor,
-    required this.leftIcon,
-    required this.mainTitle,
-    required this.rghteIcon,
-    required this.subTitle,
+    required this.icon,
+    required this.title,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: double.infinity,
-      height: 60,
+      padding: EdgeInsets.all(8),
+      width: 150,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8.0),
-        color: backRoundColor,
-      ),
-      // Coustm Card Info
-      child: Row(
+          color: Theme.of(context).colorScheme.secondary,
+          borderRadius: BorderRadius.circular(25),
+          border: Border.all(
+            color: Theme.of(context).colorScheme.inversePrimary,
+          )),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          // Icon Part
-          Padding(
-            padding: const EdgeInsets.all(8.0),
+          Expanded(
             child: Icon(
-              leftIcon,
-              size: 20,
+              icon,
+              size: 30,
               color: Theme.of(context).colorScheme.primary,
             ),
           ),
-          const SizedBox(
-            width: 5,
-          ),
-          // Acount Infoo
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Expanded(
-                child: mainTitle,
+          Expanded(
+            child: Text(
+              title,
+              style: TextStyle(
+                fontSize: 18,
+                color: Theme.of(context).colorScheme.inverseSurface,
+                fontWeight: FontWeight.bold,
               ),
-              Expanded(
-                child: subTitle,
-              ),
-            ],
-          ),
-          // Add icons
-          const Spacer(),
-          IconButton(
-              onPressed: null,
-              icon: Icon(
-                rghteIcon,
-                color: Theme.of(context).colorScheme.primary,
-                size: 30,
-              ))
+            ),
+          )
         ],
       ),
     );
